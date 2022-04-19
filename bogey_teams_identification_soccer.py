@@ -9,6 +9,7 @@ Created on Fri Apr 15 15:11:45 2022
 import os
 import sqlite3
 import pandas as pd
+import wald_wolfowitz_runs_test
 
 os.chdir('/Users/rorybunker/Google Drive/Research/Bogey Teams in Sport/Data')
 
@@ -101,7 +102,7 @@ def add_upset_type_column(df):
         return "NOT UPSET"
     
 
-team_name = 'Manchester United'
+team_name = 'Newcastle United'
 team_id = get_team_id(team_name)
     
 df = get_team_matches(team_id)
@@ -121,4 +122,10 @@ team_id = get_team_id(comparison_team_name)
 
 df = df[(df["home_team_api_id"] == team_id) | (df["away_team_api_id"] == team_id)]
 
+upset_type_list = []
+for val in df['upset_type']:
+    upset_type_list.append(val)
+
+print(upset_type_list)
+    
 #df.to_csv(team_name + '_matches.csv', index=False)
