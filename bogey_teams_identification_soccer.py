@@ -9,7 +9,7 @@ Created on Fri Apr 15 15:11:45 2022
 import os
 import sqlite3
 import pandas as pd
-import wald_wolfowitz_runs_test
+#import wald_wolfowitz_runs_test
 
 os.chdir('/Users/rorybunker/Google Drive/Research/Bogey Teams in Sport/Data')
 
@@ -95,37 +95,39 @@ def add_result_column(df):
 
 def add_upset_type_column(df):
     if (df["home_implied_win_prob"] > df["away_implied_win_prob"] and df['team_venue'] == 'HOME' and df["result"] == 'NOT WIN') or (df["home_implied_win_prob"] < df["away_implied_win_prob"] and df['team_venue'] == 'AWAY' and df["result"] == 'NOT WIN'):
-        return "UPSET NOT WIN"
+        return "ULD" # Upset loss or draw
     elif (df["home_implied_win_prob"] < df["away_implied_win_prob"] and df['team_venue'] == 'HOME' and df["result"] == 'WIN') or (df["home_implied_win_prob"] > df["away_implied_win_prob"] and df['team_venue'] == 'AWAY' and df["result"] == 'WIN'):
-        return "UPSET WIN"
+        return "UW" # Upset win
     else:
-        return "NOT UPSET"
+        return "N" # Not an upset
     
+def bogey_team_checker(team, comparison_team):
+    team_id = get_team_id(team)
+        
+    df = get_team_matches(team_id)
+        
+    df['team_venue'] = ['HOME' if x == team_id else 'AWAY' for x in df['home_team_api_id']]
+    df["result"] = df.apply(lambda x: add_result_column(x), axis = 1)
+    df["home_odds_avg"] = df[['B365H', 'BWH', 'IWH', 'LBH', 'PSH', 'WHH',
+                                'SJH', 'VCH', 'GBH', 'BSH']].mean(axis=1)
+    df["home_implied_win_prob"] = 1/df["home_odds_avg"]
+    df["away_odds_avg"] = df[['B365A', 'BWA', 'IWA', 'LBA', 'PSA', 'WHA',
+                                'SJA', 'VCA', 'GBA', 'BSA']].mean(axis=1)
+    df["away_implied_win_prob"] = 1/df["away_odds_avg"]
+    df["upset_type"] = df.apply(lambda x: add_upset_type_column(x), axis = 1)
+        
+    comparison_team_name = comparison_team
+    team_id = get_team_id(comparison_team_name)
+    
+    df = df[(df["home_team_api_id"] == team_id) | (df["away_team_api_id"] == team_id)]
+    
+    upset_type_list = []
+    for val in df['upset_type']:
+        upset_type_list.append(val)
+    
+    print(upset_type_list)
+    
+    return upset_type_list
 
-team_name = 'Newcastle United'
-team_id = get_team_id(team_name)
-    
-df = get_team_matches(team_id)
-    
-df['team_venue'] = ['HOME' if x == team_id else 'AWAY' for x in df['home_team_api_id']]
-df["result"] = df.apply(lambda x: add_result_column(x), axis = 1)
-df["home_odds_avg"] = df[['B365H', 'BWH', 'IWH', 'LBH', 'PSH', 'WHH',
-                            'SJH', 'VCH', 'GBH', 'BSH']].mean(axis=1)
-df["home_implied_win_prob"] = 1/df["home_odds_avg"]
-df["away_odds_avg"] = df[['B365A', 'BWA', 'IWA', 'LBA', 'PSA', 'WHA',
-                            'SJA', 'VCA', 'GBA', 'BSA']].mean(axis=1)
-df["away_implied_win_prob"] = 1/df["away_odds_avg"]
-df["upset_type"] = df.apply(lambda x: add_upset_type_column(x), axis = 1)
-    
-comparison_team_name = 'Liverpool'
-team_id = get_team_id(comparison_team_name)
-
-df = df[(df["home_team_api_id"] == team_id) | (df["away_team_api_id"] == team_id)]
-
-upset_type_list = []
-for val in df['upset_type']:
-    upset_type_list.append(val)
-
-print(upset_type_list)
-    
-#df.to_csv(team_name + '_matches.csv', index=False)
+t1_list = bogey_team_checker('Liverpool', 'Manchester United')
+t2_list = bogey_team_checker('Manchester United', 'Liverpool')
