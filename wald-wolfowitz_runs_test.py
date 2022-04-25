@@ -5,7 +5,7 @@ import math
 import scipy.stats as st # for pvalue 
 import numpy as np
 
-L = ['N', 'N', 'N', 'N', 'UL', 'UL', 'UL', 'N', 'N', 'N', 'UL', 'N', 'UL', 'N', 'N', 'N', 'UL', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'UL', 'N', 'N', 'N', 'N', 'UL', 'N', 'UL', 'N']
+L = ['U', 'N', 'N', 'N', 'U', 'U', 'U', 'U', 'N', 'N', 'U', 'N', 'U', 'N', 'N', 'N', 'U', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'U', 'N', 'N', 'N', 'N', 'U', 'N', 'U', 'U']
 
 # Finds runs in data: counts and creates a list of them
 def getRuns(L):
