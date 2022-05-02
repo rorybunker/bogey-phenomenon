@@ -4,8 +4,10 @@
 import math
 import scipy.stats as st # for pvalue 
 import numpy as np
+import bogey_player_identification_tennis
 
-L = ['U', 'N', 'N', 'N', 'U', 'U', 'U', 'U', 'N', 'N', 'U', 'N', 'U', 'N', 'N', 'N', 'U', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'U', 'N', 'N', 'N', 'N', 'U', 'N', 'U', 'U']
+df_player1_player2 = bogey_player_identification_tennis.df_p1_p2
+L = bogey_player_identification_tennis.get_hr_list(df_player1_player2)
 
 # Finds runs in data: counts and creates a list of them
 def getRuns(L):
@@ -61,3 +63,6 @@ print('Number of runs: %s' %(R))
 print('Number of 1\'s: %s; Number of 0\'s: %s ' %(n1,n2))
 print('Z value: %s' %(ww_z))
 print('One tailed P value: %s; Two tailed P value: %s ' %(p_values_one, p_values_two))
+
+if p_values_one < 0.05:
+    print(bogey_player_identification_tennis.get_ur_list(df_player1_player2))
