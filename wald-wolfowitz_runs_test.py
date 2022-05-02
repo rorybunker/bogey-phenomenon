@@ -4,6 +4,9 @@
 import math
 import scipy.stats as st # for pvalue 
 import numpy as np
+# import os
+# path = '/Users/rorybunker/Google Drive/Research/Bogey Teams in Sport/Data'
+# os. chdir(path) 
 import bogey_player_identification_tennis
 
 df_player1_player2 = bogey_player_identification_tennis.df_p1_p2
@@ -65,4 +68,21 @@ print('Z value: %s' %(ww_z))
 print('One tailed P value: %s; Two tailed P value: %s ' %(p_values_one, p_values_two))
 
 if p_values_one < 0.05:
-    print(bogey_player_identification_tennis.get_ur_list(df_player1_player2))
+    ur = bogey_player_identification_tennis.get_ur_list(df_player1_player2)
+
+print(ur)
+
+ul_count = 0
+uw_count = 0
+
+for r in ur:
+    if r == 'UW':
+        uw_count += 1
+    else:
+        ul_count += 1
+
+print(uw_count)
+print(ul_count)
+print(uw_count/(uw_count+ul_count))
+print(uw_count/len(df_player1_player2))
+print(ul_count/len(df_player1_player2))
