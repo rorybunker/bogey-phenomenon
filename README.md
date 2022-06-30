@@ -5,7 +5,7 @@ The Wald-Wolfowitz test is adapted from code from https://gist.github.com/kwcoop
 Tennis data: Same data used by Angelini, Candila & De Angelis (2021) https://bit.ly/3EwY9vo, originally sourced from
 http://www.tennis-data.co.uk/
 
-## Parameters
+## Usage
 - specify the two players in p1 and p2 in Last Name First Initial format, e.g., p1 = 'Murray A.' p2 = 'Djokovic N.'
 - uncomment this line if you want to run for a specific tournament, e.g, for the Australian Open only:
 df = df[(df["Tournament"] == "Australian Open")]
