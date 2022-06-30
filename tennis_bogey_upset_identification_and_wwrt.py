@@ -1,32 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Apr 15 15:11:45 2022
+Combined Wald-Wolfowitz Runs Test and Bogey player identification method using
+data frmo professional men's tennis.
+The Wald-Wolfowitz Runs Test portion of this code was 
+adapted from https://gist.github.com/kwcooper/b1ff695d6ff9dc0189d52fe9ba4dc567
+
+The data, Data_Clean.csv, is the same dataset Angelini et al. (2022), which
+had been passed through the clean() function in the authors' welo R package 
 @author: rorybunker
 """
 
-# Nishikori K. - Tsonga J.W. 1-tailed p-val: 0.03234427190062463  2-tailed p-val: 0.06331522897380863  UR: ['UW', 'UW', 'UW', 'UL', 'UL']
-# https://www.heraldsun.com.au/sport/tennis/jowilfried-tsonga-hopes-to-avoid-australian-open-bogey-kei-nishikori/news-story/2dfaab3f641494447405ae65fc7e7592
-
 import pandas as pd
+import math
+import scipy.stats as st # for pvalue 
+import numpy as np
 
-df = pd.read_csv('https://raw.githubusercontent.com/rorybunker/bogey-teams-players-sport/main/Data_Clean.csv', low_memory=False)
-# uncomment any of the below if applicable
-# df = df[(df["Tournament"] == "Australian Open")]
-# df = df[(df["Series"] == "Grand Slam")]
-# df = df[(df["Date"] <= "2017-01-12")]
-p2 = 'Nishikori K.'
-p1 = 'Tsonga J.W.'
-
-df_p1_p2 = df[((df["P_i"] == p1) & (df["P_j"] == p2)) | ((df["P_i"] == p2) & (df["P_j"] == p1))]
-
-def check_hr_set(df_p1_p2):
+# create historical result set, HR, which consists of upset results, U, and non-upset results, N.
+def check_hr_set(p1, p2, df_p1_p2):
     if (1/df_p1_p2["AvgW"] < 1/df_p1_p2["AvgL"] and df_p1_p2['Winner'] == p1) or (1/df_p1_p2["AvgW"] < 1/df_p1_p2["AvgL"] and df_p1_p2['Winner'] == p2):
         return "U"
     else:
         return "N"
     
-def add_upset_type_column1(df_p1_p2):
+def add_upset_type_column1(p1, p2, df_p1_p2):
     
     if 1/df_p1_p2["AvgW"] < 1/df_p1_p2["AvgL"] and df_p1_p2['Winner'] == p1:
         return "UW"
@@ -35,7 +32,7 @@ def add_upset_type_column1(df_p1_p2):
     else:
         return "N"
     
-def add_upset_type_column2(df_p1_p2):
+def add_upset_type_column2(p1, p2, df_p1_p2):
     if 1/df_p1_p2["AvgW"] < 1/df_p1_p2["AvgL"] and df_p1_p2['Winner'] == p2:
         return "UW"
     elif 1/df_p1_p2["AvgW"] < 1/df_p1_p2["AvgL"] and df_p1_p2['Winner'] == p1:
@@ -43,8 +40,8 @@ def add_upset_type_column2(df_p1_p2):
     else:
         return "N"
   
-def get_hr_list(df_p1_p2):
-    df_p1_p2["hr_check"] = df_p1_p2.apply(lambda x: check_hr_set(x), axis = 1)
+def get_hr_list(p1, p2, df_p1_p2):
+    df_p1_p2["hr_check"] = df_p1_p2.apply(lambda x: check_hr_set(p1, p2, x), axis = 1)
     hr_list = []
     
     for val in df_p1_p2["hr_check"]:
@@ -52,9 +49,9 @@ def get_hr_list(df_p1_p2):
     
     return hr_list
 
-def get_ur_list(df_p1_p2):
-    df_p1_p2["upset_type_p1"] = df_p1_p2.apply(lambda x: add_upset_type_column1(x), axis = 1)
-    df_p1_p2["upset_type_p2"] = df_p1_p2.apply(lambda x: add_upset_type_column2(x), axis = 1)
+def get_ur_list(p1, p2, df_p1_p2):
+    df_p1_p2["upset_type_p1"] = df_p1_p2.apply(lambda x: add_upset_type_column1(p1, p2, x), axis = 1)
+    df_p1_p2["upset_type_p2"] = df_p1_p2.apply(lambda x: add_upset_type_column2(p1, p2, x), axis = 1)
     
     ur_list = []
     for r in df_p1_p2["upset_type_p1"]:
@@ -62,19 +59,6 @@ def get_ur_list(df_p1_p2):
             ur_list.append(r)
  
     return ur_list
-
-# Wald-Wolfowitz Runs Test (Actual)
-# Adapted from https://gist.github.com/kwcooper/b1ff695d6ff9dc0189d52fe9ba4dc567
-
-import math
-import scipy.stats as st # for pvalue 
-import numpy as np
-# import os
-# path = '/Users/rorybunker/Google Drive/Research/Bogey Teams in Sport/Data'
-# os. chdir(path) 
-
-df_player1_player2 = df_p1_p2
-L = get_hr_list(df_player1_player2)
 
 # Finds runs in data: counts and creates a list of them
 def getRuns(L):
@@ -98,55 +82,97 @@ def unique(list1):
     x = np.array(list1)
     return list(np.unique(x))
 
-# Gather info 
-numRuns = getRuns(L) # Grab streaks in the data
-
-L_unique = unique(L)
-
-u1 = []
-u2 = []
-for u in L:
-    if u == L_unique[0]:
-        u1.append(u)
-    elif u == L_unique[1]:
-        u2.append(u)
-
-# Define parameters
-R = numRuns      # number of runs
-n1 = len(u1)        # number of 'NOT UPSET'
-n2 = len(u2)        # number of 'UPSET NOT WIN'
-n = n1 + n2      # should equal len(L)
-
-# Run the test
-ww_z = WW_runs_test(R, n1, n2, n)
-
-# test the pvalue
-p_values_one = st.norm.sf(abs(ww_z))   #one-sided
-p_values_two = st.norm.sf(abs(ww_z))*2 #twosided
-
-# Print results
-print('Wald-Wolfowitz Runs Test')
-print('Number of runs: %s' %(R))
-print('Number of 1\'s: %s; Number of 0\'s: %s ' %(n1,n2))
-print('Z value: %s' %(ww_z))
-print('One tailed P value: %s; Two tailed P value: %s ' %(p_values_one, p_values_two))
-
-if p_values_one < 0.05:
-    ur = get_ur_list(df_player1_player2)
-
-print(ur)
-
-ul_count = 0
-uw_count = 0
-
-for r in ur:
-    if r == 'UW':
-        uw_count += 1
-    else:
-        ul_count += 1
-
-print(uw_count)
-print(ul_count)
-print(uw_count/(uw_count+ul_count))
-print(uw_count/len(df_player1_player2))
-print(ul_count/len(df_player1_player2))
+def main():    
+    df = pd.read_csv('https://raw.githubusercontent.com/rorybunker/bogey-teams-players-sport/main/Data_Clean.csv', low_memory=False)
+    
+    # ===================== SET PARAMETERS ===================== #
+    p1 = 'Murray A.'
+    p2 = 'Djokovic N.'
+    
+    # uncomment if you want to run for a specific tournament
+    # df = df[(df["Tournament"] == "Australian Open")]
+    
+    # uncomment if you want to run for Grand Slams only
+    df = df[(df["Series"] == "Grand Slam")]
+    
+    # uncomment if you want to run for *non* Grand Slams only
+    # df = df[(df["Series"] != "Grand Slam")]
+    
+    # specify dates in format "YYYY-MM-DD" if you want to run for a specific date range
+    # or use start_date = min(df["Date"]) and end_date = max(df["Date"]) for whole range
+    start_date = min(df["Date"])
+    end_date = max(df["Date"])
+    sig_level = 0.05
+    # ========================================================== #
+    
+    df = df[((df["Date"] >= start_date) & (df["Date"] <= end_date))]
+    
+    # if AvgW or AvgL is null, replace with B365 odds
+    # df[df["AvgW"].isnull()]["AvgW"]
+    # df[df["AvgW"].isnull()]['B365W']
+    df['AvgW'] = df['AvgW'].fillna(df['B365W'])
+    #df[df["AvgL"].isnull()]['B365L']
+    df['AvgL'] = df['AvgL'].fillna(df['B365L'])
+    
+    df_p1_p2 = df[((df["P_i"] == p1) & (df["P_j"] == p2)) | ((df["P_i"] == p2) & (df["P_j"] == p1))]
+    
+    HR = get_hr_list(p1, p2, df_p1_p2)
+    
+    # Gather info 
+    numRuns = getRuns(HR) # Grab streaks in the data
+    
+    HR_unique = unique(HR)
+    
+    u1 = []
+    u2 = []
+    for u in HR:
+        if u == HR_unique[0]:
+            u1.append(u)
+        elif u == HR_unique[1]:
+            u2.append(u)
+    
+    # Define parameters
+    R = numRuns      # number of runs
+    n1 = len(u1)     # number of 'NOT UPSET'
+    n2 = len(u2)     # number of 'UPSET NOT WIN'
+    n = n1 + n2      # should equal len(L)
+    
+    # Run the WWRT
+    ww_z = WW_runs_test(R, n1, n2, n)
+    
+    # calculate p-values
+    p_values_one = st.norm.sf(abs(ww_z))   # one-sided
+    p_values_two = st.norm.sf(abs(ww_z))*2 # two-sided
+    
+    # Print results
+    print('==== STEP 1 RESULTS ====')
+    print('Wald-Wolfowitz Runs Test')
+    print('Number of runs: %s' %(R))
+    print('Number of 1\'s: %s; Number of 0\'s: %s ' %(n1,n2))
+    print('Z value: %s' %(ww_z))
+    print('One tailed P value: %s; Two tailed P value: %s ' %(p_values_one, p_values_two))
+    
+    # === STEP 2 === #
+    # if 1-sided p-value is statistically significant continue
+    if p_values_one < sig_level:
+        UR = get_ur_list(p1, p2, df_p1_p2)
+        print('==== STEP 2 RESULTS ====')
+        print('Upset results list (UR): ' + str(UR))
+            
+        ul_count = 0
+        uw_count = 0
+        
+        for r in UR:
+            if r == 'UW':
+                uw_count += 1
+            else:
+                ul_count += 1
+                
+        print('Number of upset wins: %s' %(uw_count))
+        print('Number of upset losses: %s' %(ul_count))
+        print(str(uw_count/(uw_count + ul_count)*100) + '% of upset results were upset wins')
+        print(str(uw_count/len(df_p1_p2)*100) + '% of matches were upset wins')
+        print(str(ul_count/len(df_p1_p2)*100) + '% of matches were upset losses')
+        
+if __name__ == '__main__':
+    main()
