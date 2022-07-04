@@ -90,8 +90,7 @@ def unique(list1):
     return list(np.unique(x))
 
 def main():    
-    # df = pd.read_csv('https://raw.githubusercontent.com/rorybunker/bogey-teams-players-sport/main/Data_Clean.csv', low_memory=False)
-    df = pd.read_csv('/Users/rorybunker/Google Drive/Research/Bogey Teams in Sport/Data/Data_Clean.csv', low_memory=False)
+    df = pd.read_csv('https://raw.githubusercontent.com/rorybunker/bogey-teams-players-sport/main/Data_Clean.csv', low_memory=False)
 
     # ===================== SET PARAMETERS ===================== #
     p1 = 'Nishikori K.'
