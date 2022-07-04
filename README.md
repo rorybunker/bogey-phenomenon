@@ -18,4 +18,4 @@ df = df[(df["Series"] != "Grand Slam")]
 - specify the statistical significance level in sig_level, e.g., for 95% level/alpha = 0.05:
 sig_level = 0.05
 
-![image](https://user-images.githubusercontent.com/29388472/166176166-2a2ed1bc-61b6-4fdc-a102-89dd91f1f4a3.png)
+![Fig1_Method_Flow_v2](https://user-images.githubusercontent.com/29388472/177063908-f673b1e8-7d37-4c6b-9e80-c3267eb5b5e0.jpg)
