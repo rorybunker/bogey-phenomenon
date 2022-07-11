@@ -109,7 +109,7 @@ def main():
     # or use start_date = min(df["Date"]) and end_date = max(df["Date"]) for whole range
     start_date = min(df["Date"])
     end_date = max(df["Date"])
-    sig_level = 0.2
+    sig_level = 0.05
     # ========================================================== #
     
     df = df[((df["Date"] >= start_date) & (df["Date"] <= end_date))]
