@@ -167,11 +167,12 @@ def main():
     p_values_two = st.norm.sf(abs(ww_z_k_3))*2 # two-sided
     
     # Print results
+    print(str(p1) + ' vs. ' + str(p2))
     print('==== RESULTS ====')
     print('Results set (RS):')
     print(pd.DataFrame.from_records(list_of_tuples(RS_date_list, RS), columns =['Date', 'Result']).to_string(index=False))
     print()     
-    print('Wald-Wolfowitz Runs Test')
+    print('k-Category Wald-Wolfowitz Runs Test (k = 3)')
     print('Number of runs: %s' %(R))
     print('Number of Ns: %s; Number of ULs: %s; Number of UWs: %s ' %(n1,n2,n3))
     print('Z value: %s' %(ww_z_k_3))
