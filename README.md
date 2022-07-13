@@ -22,6 +22,9 @@ sig_level = 0.05
 
 ## Example Output
 ### bogey_identification_tennis.py
+p1 = 'Ferrer D.', 
+p2 = 'Lopez F.', 
+sig_level = 0.05
 ```
 Ferrer D. vs. Lopez F.
 ==== STEP 1 RESULTS ====
@@ -71,6 +74,8 @@ Number of ULs: 7
 
 ## Example Output
 ### bogey_identification_tennis_v2.py
+p1 = 'Ferrer D.', 
+p2 = 'Lopez F.'
 ```
 Ferrer D. vs. Lopez F.
 ==== RESULTS ====
