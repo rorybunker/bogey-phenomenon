@@ -98,7 +98,7 @@ Results set (RS):
 2016-10-11     UL
 2017-06-01     UL
 
-Wald-Wolfowitz Runs Test
+k-Category Wald-Wolfowitz Runs Test (k = 3)
 Number of runs: 5
 Number of Ns: 9; Number of ULs: 7; Number of UWs: 0 
 Z value: -1.7764695763913763
