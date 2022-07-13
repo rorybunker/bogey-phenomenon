@@ -93,8 +93,8 @@ def main():
     df = pd.read_csv('https://raw.githubusercontent.com/rorybunker/bogey-teams-players-sport/main/Data_Clean.csv', low_memory=False)
 
     # ===================== SET PARAMETERS ===================== #
-    p1 = 'Nishikori K.'
-    p2 = 'Tsonga J.W.'
+    p1 = 'Ferrer D.'
+    p2 = 'Lopez F.'
     
     # uncomment if you want to run for a specific tournament
     # df = df[(df["Tournament"] == "Australian Open")]
@@ -159,6 +159,7 @@ def main():
     p_values_two = st.norm.sf(abs(ww_z))*2 # two-sided
     
     # Print results
+    print(str(p1) + " vs. " + str(p2))
     print('==== STEP 1 RESULTS ====')
     print('Historical results set (HR):')
     print(pd.DataFrame.from_records(list_of_tuples(HR_date_list, HR), columns =['Date', 'Result']).to_string(index=False))
@@ -208,13 +209,15 @@ def main():
         n = n1 + n2      # should equal len(L)
     
         # Run the WWRT
-        ww_z = WW_runs_test(R, n1, n2, n)     
-        p_values_one = st.norm.sf(abs(ww_z))
-        
-        print('p-value for WWRT on UR: ' + str(p_values_one))
+        if numRuns > 1:
+            ww_z = WW_runs_test(R, n1, n2, n)     
+            p_values_one = st.norm.sf(abs(ww_z))
+            print('p-value for WWRT on UR: ' + str(p_values_one))
+            
         print('Number of UWs: %s' %(uw_count))
         print('Number of ULs: %s' %(ul_count))
         print(str(uw_count/(uw_count + ul_count)*100) + '% of upset results were UWs')
+        print(str(ul_count/(uw_count + ul_count)*100) + '% of upset results were ULs')
         print(str(uw_count/len(df_p1_p2)*100) + '% of matches were UWs')
         print(str(ul_count/len(df_p1_p2)*100) + '% of matches were ULs')
         
