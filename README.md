@@ -68,3 +68,34 @@ Number of ULs: 7
 0.0% of matches were UWs
 43.75% of matches were ULs
 ```
+
+## Example Output
+### bogey_identification_tennis_v2.py
+```
+Ferrer D. vs. Lopez F.
+==== RESULTS ====
+Results set (RS):
+      Date Result
+2005-08-27     UL
+2006-10-12     UL
+2007-10-05      N
+2007-10-17     UL
+2008-03-06     UL
+2008-10-15     UL
+2009-04-14      N
+2011-04-13      N
+2011-10-15      N
+2012-04-27      N
+2013-05-31      N
+2014-02-27      N
+2015-10-04      N
+2016-05-28      N
+2016-10-11     UL
+2017-06-01     UL
+
+Wald-Wolfowitz Runs Test
+Number of runs: 5
+Number of Ns: 9; Number of ULs: 7; Number of UWs: 0 
+Z value: -1.7764695763913763
+One tailed P value: 0.037827776066450346; Two tailed P value: 0.07565555213290069 
+```
