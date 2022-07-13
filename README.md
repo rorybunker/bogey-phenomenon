@@ -6,7 +6,7 @@ Tennis data: Same data used by Angelini, Candila & De Angelis (2021) https://bit
 http://www.tennis-data.co.uk/
 
 ## Usage
-# bogey_identification_tennis.py
+### bogey_identification_tennis.py
 - specify the two players in p1 and p2 in Last Name First Initial format, e.g., p1 = 'Murray A.' p2 = 'Djokovic N.'
 - uncomment this line if you want to run for a specific tournament, e.g, for the Australian Open only:
 df = df[(df["Tournament"] == "Australian Open")]
@@ -21,7 +21,7 @@ sig_level = 0.05
 ![Fig1_Method_Flow_v2](https://user-images.githubusercontent.com/29388472/177063908-f673b1e8-7d37-4c6b-9e80-c3267eb5b5e0.jpg)
 
 ## Example Output
-# bogey_identification_tennis.py
+### bogey_identification_tennis.py
 ```
 Ferrer D. vs. Lopez F.
 ==== STEP 1 RESULTS ====
