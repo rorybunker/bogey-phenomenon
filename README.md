@@ -7,15 +7,15 @@ http://www.tennis-data.co.uk/
 
 ## Usage
 ### bogey_identification_tennis.py
-- specify the two players in p1 and p2 in Last Name First Initial format, e.g., p1 = 'Murray A.' p2 = 'Djokovic N.'
-- uncomment this line if you want to run for a specific tournament, e.g, for the Australian Open only:
+- Specify the two players in p1 and p2 in Last Name First Initial format, e.g., p1 = 'Murray A.' p2 = 'Djokovic N.'
+- Uncomment this line if you want to run for a specific tournament, e.g, for the Australian Open only:
 df = df[(df["Tournament"] == "Australian Open")]
-- uncomment this line if you want to run for Grand Slams only:
+- Uncomment this line if you want to run for Grand Slams only:
 df = df[(df["Series"] == "Grand Slam")]
-- uncomment this line if you want to run for non-Grand Slam tournaments only:
+- Uncomment this line if you want to run for non-Grand Slam tournaments only:
 df = df[(df["Series"] != "Grand Slam")]
-- specify dates (start_date and end_date) in the format "YYYY-MM-DD" if you want to check for a specific date range, or use start_date = min(df["Date"]) and end_date = max(df["Date"]) for entire dataset's date range:
-- specify the statistical significance level in sig_level, e.g., for 95% level/alpha = 0.05:
+- Specify dates (start_date and end_date) in the format "YYYY-MM-DD" if you want to check for a specific date range, or use start_date = min(df["Date"]) and end_date = max(df["Date"]) for entire dataset's date range:
+- Specify the statistical significance level in sig_level, e.g., for 95% level/alpha = 0.05:
 sig_level = 0.05
 
 ![Fig1_Method_Flow_v2](https://user-images.githubusercontent.com/29388472/177063908-f673b1e8-7d37-4c6b-9e80-c3267eb5b5e0.jpg)
