@@ -72,7 +72,6 @@ Number of ULs: 7
 43.75% of matches were ULs
 ```
 
-## Example Output
 ### bogey_identification_tennis_v2.py
 p1 = 'Ferrer D.', 
 p2 = 'Lopez F.'
