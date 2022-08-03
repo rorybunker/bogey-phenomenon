@@ -6,12 +6,15 @@ http://www.tennis-data.co.uk/, passed through Angelini et al.'s clean() function
 ## Requirements
 A python 3 environment with pandas and scipy installed, e.g.,
 ```
-conda create --name bogey
-conda activate bogey
-conda install pandas
-conda install scipy
+% conda create --name bogey
+% conda activate bogey
+% conda install pandas
+% conda install scipy
 ```
 
+```
+% python3 bogey_identification_tennis_v3.py -h
+```
 ```
 usage: bogey_identification_tennis_v3.py [-h] [-a PLAYER_1] [-b PLAYER_2]
                                          [-g GRAND_SLAM] [-t TOURNAMENT]
