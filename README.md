@@ -1,23 +1,48 @@
-# Bogey Players in Sport
+# Identification of Bogey Players in Tennis
 
-The Wald-Wolfowitz test is adapted from code from https://gist.github.com/kwcooper/b1ff695d6ff9dc0189d52fe9ba4dc567
+Dataset: Data_Clean.csv. This is the same data used by Angelini, Candila & De Angelis (2021) https://bit.ly/3EwY9vo, originally sourced from
+http://www.tennis-data.co.uk/, passed through Angelini et al.'s clean() function in their welo R package.
 
-Tennis data: Same data used by Angelini, Candila & De Angelis (2021) https://bit.ly/3EwY9vo, originally sourced from
-http://www.tennis-data.co.uk/
+## Requirements
+A python 3 environment with pandas and scipy installed, e.g.,
+```
+conda create --name bogey
+conda activate bogey
+conda install pandas
+conda install scipy
+```
 
-## Usage
-### bogey_identification_tennis.py
-- Specify the two players in p1 and p2 in Last Name First Initial format, e.g., p1 = 'Murray A.' p2 = 'Djokovic N.'
-- Uncomment this line if you want to run for a specific tournament, e.g, for the Australian Open only:
-df = df[(df["Tournament"] == "Australian Open")]
-- Uncomment this line if you want to run for Grand Slams only:
-df = df[(df["Series"] == "Grand Slam")]
-- Uncomment this line if you want to run for non-Grand Slam tournaments only:
-df = df[(df["Series"] != "Grand Slam")]
-- Specify dates (start_date and end_date) in the format "YYYY-MM-DD" if you want to check for a specific date range, or use start_date = min(df["Date"]) and end_date = max(df["Date"]) for entire dataset's date range:
-- Specify the statistical significance level in sig_level, e.g., for 95% level/alpha = 0.05:
-sig_level = 0.05
+```
+usage: bogey_identification_tennis_v3.py [-h] [-a PLAYER_1] [-b PLAYER_2]
+                                         [-g GRAND_SLAM] [-t TOURNAMENT]
+                                         [-s S_DATE] [-e E_DATE]
+                                         [-z Z_VAL_TYPE]
 
+options:
+  -h, --help            show this help message and exit
+  -a PLAYER_1, --player_1 PLAYER_1
+                        player name in format Last Name, Initial., enclosed in
+                        double quotes e.g., "Djokovic, N." (default = all
+                        players)
+  -b PLAYER_2, --player_2 PLAYER_2
+                        player name in format Last Name, Initial., enclosed in
+                        double quotes e.g., "Djokovic, N." (default = all
+                        players)
+  -g GRAND_SLAM, --grand_slam GRAND_SLAM
+                        0 = non grand slams, 1 = grand slams only, 2 = grand
+                        slams and non grand slams (default)
+  -t TOURNAMENT, --tournament TOURNAMENT
+                        tournament name, e.g., Australian Open
+  -s S_DATE, --s_date S_DATE
+                        start date in YYYY-MM-DD format (default = min date in
+                        dataset)
+  -e E_DATE, --e_date E_DATE
+                        end date in YYYY-MM-DD format (default = max date in
+                        dataset)
+  -z Z_VAL_TYPE, --z_val_type Z_VAL_TYPE
+                        type of z statistic - standard std or continuity
+                        corrected cc (default = cc)
+```
 ![Fig1_Method_Flow_v2](https://user-images.githubusercontent.com/29388472/177063908-f673b1e8-7d37-4c6b-9e80-c3267eb5b5e0.jpg)
 
 ## Example Output
