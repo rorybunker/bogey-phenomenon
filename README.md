@@ -47,3 +47,5 @@ options:
                         type of z statistic - standard std or continuity
                         corrected cc (default = cc)
 ```
+## References
+Angelini, G., Candila, V., & De Angelis, L. (2022). Weighted Elo rating for tennis match predictions. European Journal of Operational Research, 297(1), 120-132.
