@@ -3,7 +3,7 @@
 Dataset: Data_Clean.csv. This is the same data used by Angelini, Candila & De Angelis (2021) https://bit.ly/3EwY9vo, originally sourced from
 http://www.tennis-data.co.uk/, passed through Angelini et al.'s clean() function in their welo R package.
 
-## Requirements
+## Requirements & Environment
 A python 3 environment with pandas and scipy installed, e.g.,
 ```
 % conda create --name bogey
@@ -12,6 +12,7 @@ A python 3 environment with pandas and scipy installed, e.g.,
 % conda install scipy
 ```
 
+## Usage & Options
 ```
 % python3 bogey_identification_tennis_v3.py -h
 ```
