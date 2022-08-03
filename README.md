@@ -1,7 +1,7 @@
 # Identification of Bogey Players in Tennis
 
 ## Dataset
-Data_Clean.csv is the same data used by Angelini, Candila & De Angelis (2021) https://bit.ly/3EwY9vo, passed through Angelini et al.'s clean() function in their welo R package (https://cran.r-project.org/web/packages/welo/index.html).
+Data_Clean.csv is the same data used by Angelini, Candila & De Angelis, 2022 (https://doi.org/10.1016/j.ejor.2021.04.011), passed through their clean() function in their welo R package (https://cran.r-project.org/web/packages/welo/index.html).
 
 ## Requirements & Environment
 A python 3 environment with pandas and scipy installed, e.g.,
