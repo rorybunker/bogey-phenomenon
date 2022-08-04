@@ -227,7 +227,7 @@ def main():
             writer = csv.writer(f)
             writer.writerow(header)
             for x in range(len(p_val_csv)):
-                writer.writerow([adjust_pvalues()[x][0], adjust_pvalues()[x][1])
+                writer.writerow([adjust_pvalues()[x][0], adjust_pvalues()[x][1]])
 
         # Also print results if only running for player pair
         if args.player_1 != 'all' and args.player_2 != 'all':
