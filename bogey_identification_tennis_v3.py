@@ -99,7 +99,7 @@ def unique(list1):
     x = np.array(list1)
     return list(np.unique(x))
 
-def adjust_pvalues():
+def adjust_pvalues(csv_file):
     import rpy2
     import rpy2.robjects as robjects
     from rpy2.robjects.packages import importr, data
@@ -220,14 +220,15 @@ def main():
 
             writer.writerow(data)
 
-        p_val_csv = pd.read_csv('bogey_results.csv')
+        p_val_csv_name = 'bogey_results.csv'
+        p_val_csv = pd.read_csv(p_val_csv_name)
 
         header = ['p_val_1_adj', 'p_val_2_adj']
         with open('bogey_p_vals_adjusted.csv', 'w', encoding='UTF8', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(header)
             for x in range(len(p_val_csv)):
-                writer.writerow([adjust_pvalues()[x][0], adjust_pvalues()[x][1]])
+                writer.writerow([adjust_pvalues(p_val_csv_name)[x][0], adjust_pvalues(p_val_csv_name)[x][1]])
 
         # Also print results if only running for player pair
         if args.player_1 != 'all' and args.player_2 != 'all':
