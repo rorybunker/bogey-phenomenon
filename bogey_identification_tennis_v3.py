@@ -109,8 +109,8 @@ def adjust_pvalues(csv_file):
     base = importr('base')
     stats = importr('stats')
 
-    p_val_1_list = list(csv_file['p_val_1'])
-    p_val_2_list = list(csv_file['p_val_2'])
+    p_val_1_list = list(csv_file[0])
+    p_val_2_list = list(csv_file[1])
 
     from rpy2.robjects.packages import importr
     from rpy2.robjects.vectors import FloatVector
