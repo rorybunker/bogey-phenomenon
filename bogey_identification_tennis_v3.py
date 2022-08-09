@@ -30,6 +30,7 @@ warnings.filterwarnings("ignore")
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', '--player_1', type=str, required=False, default='all', help='player name in format Last Name, Initial., enclosed in double quotes e.g., "Djokovic, N." (default = all players)')
 parser.add_argument('-b', '--player_2', type=str, required=False, default='all', help='player name in format Last Name, Initial., enclosed in double quotes e.g., "Djokovic, N." (default = all players)')
+parser.add_argument('-d', '--dataset', type=str, required=False, default='atp', help='atp (mens) or wta (womens)')
 parser.add_argument('-g', '--grand_slam', type=int, required=False, default=2, help='0 = non grand slams, 1 = grand slams only, 2 = grand slams and non grand slams (default)')
 parser.add_argument('-t', '--tournament', type=str, required=False, default='all', help='tournament name, e.g., Australian Open')
 parser.add_argument('-s', '--s_date', type=str, required=False, default='min', help='start date in YYYY-MM-DD format (default = min date in dataset)')
@@ -120,7 +121,10 @@ def adjust_pvalues(csv_file):
     return p_val_1_adjusted, p_val_2_adjusted
 
 def main():
-    df = pd.read_csv('https://raw.githubusercontent.com/rorybunker/bogey-phenomenon-sport/main/Data_Clean.csv', low_memory=False)
+    if args.dataset == 'wta'
+        df = pd.read_csv('https://raw.githubusercontent.com/rorybunker/bogey-phenomenon-sport/main/Data_Clean_WTA.csv', low_memory=False)
+    else:
+        df = pd.read_csv('https://raw.githubusercontent.com/rorybunker/bogey-phenomenon-sport/main/Data_Clean.csv', low_memory=False)
 
     if args.tournament != 'all':
         df = df[(df["Tournament"] == args.tournament)]
