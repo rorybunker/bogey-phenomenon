@@ -19,7 +19,6 @@ db_clean <- clean(db)
 # output the cleaned dataset to a csv file
 write.csv(db_clean,"Data_Clean.csv", row.names = FALSE)
 ```
-```
 
 ## Requirements & Environment
 A python 3 environment with pandas and scipy installed, e.g.,
