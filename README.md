@@ -33,7 +33,7 @@ A python 3 environment with pandas and scipy installed, e.g.,
 ```
 % python3 bogey_identification_tennis_v3.py -h
 ```
-```
+
 usage: bogey_identification_tennis_v3.py [-h] [-a PLAYER_1] [-b PLAYER_2]
                                          [-g GRAND_SLAM] [-t TOURNAMENT]
                                          [-s S_DATE] [-e E_DATE]
@@ -63,6 +63,6 @@ options:
   -z Z_VAL_TYPE, --z_val_type Z_VAL_TYPE
                         type of z statistic - standard std or continuity
                         corrected cc (default = cc)
-```
+
 ## References
 Angelini, G., Candila, V., & De Angelis, L. (2022). Weighted Elo rating for tennis match predictions. European Journal of Operational Research, 297(1), 120-132. https://doi.org/10.1016/j.ejor.2021.04.011.
