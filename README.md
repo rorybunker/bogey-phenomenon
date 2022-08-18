@@ -1,7 +1,8 @@
 # Identification of Bogey Players in Tennis
 
 ## Dataset
-Data_Clean.csv is the same ATP men's data used by Angelini, Candila & De Angelis, 2022 (https://doi.org/10.1016/j.ejor.2021.04.011), passed through their clean() function in their welo R package (https://cran.r-project.org/web/packages/welo/index.html).
+Data_Clean.csv is the ATP men's data, Supplementary Data S1, used by Angelini, Candila & De Angelis, 2022 (https://doi.org/10.1016/j.ejor.2021.04.011), passed through their clean() function in their welo R package (https://cran.r-project.org/web/packages/welo/index.html).
+The csv file can be created by running the following R script below:
 
 ```
 # first, set your working directory to where your atp_2005_2020.RData and wta_2007_2020.RData files are downloaded to
