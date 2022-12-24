@@ -23,10 +23,10 @@ write.csv(db_clean,"Data_Clean.csv", row.names = FALSE)
 ## Requirements & Environment
 A python 3 environment with pandas and scipy installed, e.g.,
 ```
-% conda create --name bogey
-% conda activate bogey
-% conda install pandas
-% conda install scipy
+conda create --name bogey
+conda activate bogey
+conda install pandas
+conda install scipy
 ```
 
 ## Usage & Options
