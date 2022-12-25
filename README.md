@@ -2,23 +2,8 @@
 
 ## Dataset
 Data_Clean.csv is the ATP men's data, Supplementary Data S1 in Appendix C. Supplementary materials, used by Angelini, Candila & De Angelis, 2022 (https://doi.org/10.1016/j.ejor.2021.04.011), passed through their clean() function in their welo R package (https://cran.r-project.org/web/packages/welo/index.html). This data was originally sourced by the authors from tennis-data.co.uk.
-The csv file can be created by running the following R script below:
-```
-# first, set your working directory to where your atp_2005_2020.RData and wta_2007_2020.RData files are downloaded to
-setwd("...")
-# install welo package if it is not already installed
-list.of.packages <- c("welo")
-new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
-# load the welo library
-library("welo")
-# load the .RData file
-load("atp_2005_2020.RData")
-# apply the welo package's clean function to the loaded data
-db_clean <- clean(db)
-# output the cleaned dataset to a csv file
-write.csv(db_clean,"Data_Clean.csv", row.names = FALSE)
-```
+
+The csv file can be created by running the following create_data_clean_csv_files.R script.
 
 ## Requirements & Environment
 A python 3 environment with pandas and scipy installed, e.g.,
