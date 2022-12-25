@@ -12,7 +12,8 @@ if(length(new.packages)) install.packages(new.packages)
 library("welo")
 
 # load the .RData file
-load("/RData/atp_2005_2020.RData")
+load("./RData/atp_2005_2020.RData")
+# load("./RData/wta_2007_2020.RData")
 
 # apply the welo package's clean function to the loaded data
 db_clean <- clean(db)
