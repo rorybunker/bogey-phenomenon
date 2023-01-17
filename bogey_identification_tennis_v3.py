@@ -30,16 +30,16 @@ warnings.filterwarnings("ignore")
 parser = argparse.ArgumentParser()
 parser.add_argument('-a', '--player_1', type=str, required=False, default='all', help='player name in format Last Name, Initial., enclosed in double quotes e.g., "Djokovic, N." (default = all players)')
 parser.add_argument('-b', '--player_2', type=str, required=False, default='all', help='player name in format Last Name, Initial., enclosed in double quotes e.g., "Djokovic, N." (default = all players)')
-parser.add_argument('-d', '--dataset', type=str, required=False, default='atp', help='atp (mens) or wta (womens)')
+parser.add_argument('-d', '--dataset', type=str, required=True, help='atp (mens) or wta (womens) or test')
 parser.add_argument('-g', '--grand_slam', type=int, required=False, default=2, help='0 = non grand slams, 1 = grand slams only, 2 = grand slams and non grand slams (default)')
 parser.add_argument('-t', '--tournament', type=str, required=False, default='all', help='tournament name, e.g., Australian Open')
 parser.add_argument('-s', '--s_date', type=str, required=False, default='min', help='start date in YYYY-MM-DD format (default = min date in dataset)')
 parser.add_argument('-e', '--e_date', type=str, required=False, default='max', help='end date in YYYY-MM-DD format (default = max date in dataset)')
 parser.add_argument('-z', '--z_val_type', type=str, required=False, default='cc', help='type of z statistic - standard std or continuity corrected cc (default = cc)')
+parser.add_argument('-p', '--p_adj_method', type=str, required=False, default='BH', help='p-value adjustment for multiple comparisons method, e.g., bonferroni, hochberg, BH, holm, hommel, BY')
 args, _ = parser.parse_known_args()
 
 def add_upset_type_column1(p1, p2, df_p1_p2):
-
     if 1/df_p1_p2["AvgW"] < 1/df_p1_p2["AvgL"] and df_p1_p2['Winner'] == p1:
         return "UW"
     elif 1/df_p1_p2["AvgW"] < 1/df_p1_p2["AvgL"] and df_p1_p2['Winner'] == p2:
@@ -93,38 +93,33 @@ def WW_runs_test_k_3(R, n1, n2, n3, n, z_type):
             z = (R - muR - 0.5)/seR
         elif R < muR:
             z = (R - muR + 0.5)/seR
-
     return z
 
 def unique(list1):
     x = np.array(list1)
     return list(np.unique(x))
 
-def adjust_pvalues(csv_file):
-    import rpy2
-    import rpy2.robjects as robjects
-    from rpy2.robjects.packages import importr, data
-
-    utils = importr('utils')
-    base = importr('base')
-    stats = importr('stats')
-
-    p_val_1_list = list(csv_file[0])
-    p_val_2_list = list(csv_file[1])
-
+def adjust_pvalues(p_val_csv, p_adj_method):
     from rpy2.robjects.packages import importr
     from rpy2.robjects.vectors import FloatVector
 
-    p_val_1_adjusted = stats.p_adjust(FloatVector(pvalue_list), method = 'BH')
-    p_val_2_adjusted = stats.p_adjust(FloatVector(pvalue_list), method = 'BH')
+    stats = importr('stats')
+
+    p_val_1_list = p_val_csv['p_val_1'].tolist()
+    p_val_2_list = p_val_csv['p_val_2'].tolist()
+
+    p_val_1_adjusted = stats.p_adjust(FloatVector(p_val_1_list), method=p_adj_method)
+    p_val_2_adjusted = stats.p_adjust(FloatVector(p_val_2_list), method=p_adj_method)
 
     return p_val_1_adjusted, p_val_2_adjusted
 
 def main():
-    if args.dataset == 'wta'
-        df = pd.read_csv('https://raw.githubusercontent.com/rorybunker/bogey-phenomenon-sport/main/Data_Clean_WTA.csv', low_memory=False)
-    else:
-        df = pd.read_csv('https://raw.githubusercontent.com/rorybunker/bogey-phenomenon-sport/main/Data_Clean.csv', low_memory=False)
+    if args.dataset == 'test':
+        df = pd.read_csv('Data_Clean_Test.csv', low_memory=False)
+    elif args.dataset == 'wta':
+        df = pd.read_csv('Data_Clean_WTA.csv', low_memory=False)
+    elif args.dataset == 'atp':
+        df = pd.read_csv('Data_Clean.csv', low_memory=False)
 
     if args.tournament != 'all':
         df = df[(df["Tournament"] == args.tournament)]
@@ -143,8 +138,6 @@ def main():
         end_date = max(df["Date"])
     elif args.e_date != 'max':
         end_date = args.e_date
-
-    z_type = args.z_val_type
 
     df = df[((df["Date"] >= start_date) & (df["Date"] <= end_date))]
 
@@ -166,16 +159,27 @@ def main():
         combinations = mesh.T.reshape(-1, 2)
 
     header = ['player1', 'player2', 'results_set', 'runs', 'num_Ns', 'num_ULs', 'num_UWs', 'Z_stat', 'p_val_1', 'p_val_2']
-
     with open('bogey_results.csv', 'w', encoding='UTF8', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(header)
 
+        existing_pairs = set()  # Create an empty set to store existing player pairs
+        
         for i in range(len(combinations)):
             print(str(i + 1) + ' of ' + str(len(combinations)) + ' iterations (' + str(round((i/len(combinations))*100,1)) + '% complete)')
             p1 = pd.DataFrame(combinations).iloc[i][0]
             p2 = pd.DataFrame(combinations).iloc[i][1]
-
+            
+            # sort the players to ensure we are checking the same player pair, regardless of order
+            p1, p2 = (p1, p2) if p1 < p2 else (p2, p1) 
+            player_pair = (p1, p2) 
+            
+            # Check if the player pair already exists in the set
+            if player_pair in existing_pairs:
+                continue  # if it does, skip to the next iteration
+            else:
+                existing_pairs.add(player_pair)  # if it does not, add it to the set
+                
             df_p1_p2 = df[((df["P_i"] == p1) & (df["P_j"] == p2)) | ((df["P_i"] == p2) & (df["P_j"] == p1))]
 
             if len(df_p1_p2) == 0:
@@ -214,38 +218,43 @@ def main():
             n = n1 + n2 + n3
 
             # Run the WWRT
-            ww_z_k_3 = WW_runs_test_k_3(R, n1, n2, n3, n, z_type)
+            ww_z_k_3 = WW_runs_test_k_3(R, n1, n2, n3, n, args.z_val_type)
 
             # calculate p-values
             p_values_one = st.norm.sf(abs(ww_z_k_3))   # one-sided
             p_values_two = st.norm.sf(abs(ww_z_k_3))*2 # two-sided
 
             data = [str(p1), str(p2), list_of_tuples(RS_date_list, RS), R, n1, n2, n3, ww_z_k_3, p_values_one, p_values_two]
-
+            
             writer.writerow(data)
+        
+        f.flush()
 
-        p_val_csv_name = 'bogey_results.csv'
-        p_val_csv = pd.read_csv(p_val_csv_name)
+        p_val_csv = pd.read_csv('bogey_results.csv')
+        p_val_csv['p_val_1_adj'] = 0.0
+        p_val_csv['p_val_2_adj'] = 0.0
 
-        header = ['p_val_1_adj', 'p_val_2_adj']
-        with open('bogey_p_vals_adjusted.csv', 'w', encoding='UTF8', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(header)
-            for x in range(len(p_val_csv)):
-                writer.writerow([adjust_pvalues(p_val_csv_name)[x][0], adjust_pvalues(p_val_csv_name)[x][1]])
+        p_val_1_adj, p_val_2_adj = adjust_pvalues(p_val_csv, args.p_adj_method)
 
-        # Also print results if only running for player pair
-        if args.player_1 != 'all' and args.player_2 != 'all':
-            print(str(p1) + ' vs. ' + str(p2))
-            print('==== RESULTS ====')
-            print('Results set (RS):')
-            print(pd.DataFrame.from_records(list_of_tuples(RS_date_list, RS), columns =['Date', 'Result']).to_string(index=False))
-            print()
-            print('k-Category Wald-Wolfowitz Runs Test (k = 3)')
-            print('Number of runs: %s' %(R))
-            print('Number of Ns: %s; Number of ULs: %s; Number of UWs: %s ' %(n1,n2,n3))
-            print('Z value: %s' %(ww_z_k_3))
-            print('One tailed P value: %s; Two tailed P value: %s ' %(p_values_one, p_values_two))
+        p_val_csv.iloc[:, -2] = p_val_1_adj
+        p_val_csv.iloc[:, -1] = p_val_2_adj
+
+        p_val_csv.to_csv('bogey_results_adj.csv', index=False)
+    
+    f.close()
+
+    # Also print results if only running for player pair
+    if args.player_1 != 'all' and args.player_2 != 'all':
+        print(str(p1) + ' vs. ' + str(p2))
+        print('==== RESULTS ====')
+        print('Results set (RS):')
+        print(pd.DataFrame.from_records(list_of_tuples(RS_date_list, RS), columns =['Date', 'Result']).to_string(index=False))
+        print()
+        print('k-Category Wald-Wolfowitz Runs Test (k = 3)')
+        print('Number of runs: %s' %(R))
+        print('Number of Ns: %s; Number of ULs: %s; Number of UWs: %s ' %(n1,n2,n3))
+        print('Z value: %s' %(ww_z_k_3))
+        print('One tailed P value: %s; Two tailed P value: %s ' %(p_values_one, p_values_two))
 
 if __name__ == '__main__':
     main()
