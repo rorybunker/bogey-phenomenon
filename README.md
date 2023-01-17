@@ -14,40 +14,20 @@ conda install pandas
 conda install scipy
 ```
 
-## Usage & Options
+## Usage
 ```
-% python3 bogey_identification_tennis_v3.py -h
+python bogey_identification_tennis_v3.py [--options]
 ```
-```
-usage: bogey_identification_tennis_v3.py [-h] [-a PLAYER_1] [-b PLAYER_2]
-                                         [-g GRAND_SLAM] [-t TOURNAMENT]
-                                         [-s S_DATE] [-e E_DATE]
-                                         [-z Z_VAL_TYPE]
+## Options
+-a/--player1: Player name in format Last Name, Initial., enclosed in double quotes e.g., "Djokovic, N." (default = all players)\
+-b/--player2: Player name in format Last Name, Initial., enclosed in double quotes e.g., "Djokovic, N." (default = all players)\
+-d/--dataset: atp (mens), wta (womens), or test\
+-g/--grandslam: 0 = non grand slams, 1 = grand slams only, 2 = grand slams and non grand slams (default)\
+-t/--tournament: Tournament name, e.g., Australian Open (default is all tournaments)\
+-s/--s_date: Start date in YYYY-MM-DD format (default = min date in dataset)\
+-e/--e_date: End date in YYYY-MM-DD format (default = max date in dataset)\
+-z/--z_val_type: Type of z statistic - standard std or continuity corrected cc (default = cc)\
+-p/--p_adj_method: P-value adjustment for multiple comparisons method, e.g., bonferroni, hochberg, BH, holm, hommel, BY. Default is BH.\
 
-options:
-  -h, --help            show this help message and exit
-  -a PLAYER_1, --player_1 PLAYER_1
-                        player name in format Last Name, Initial., enclosed in
-                        double quotes e.g., "Djokovic, N." (default = all
-                        players)
-  -b PLAYER_2, --player_2 PLAYER_2
-                        player name in format Last Name, Initial., enclosed in
-                        double quotes e.g., "Djokovic, N." (default = all
-                        players)
-  -g GRAND_SLAM, --grand_slam GRAND_SLAM
-                        0 = non grand slams, 1 = grand slams only, 2 = grand
-                        slams and non grand slams (default)
-  -t TOURNAMENT, --tournament TOURNAMENT
-                        tournament name, e.g., Australian Open
-  -s S_DATE, --s_date S_DATE
-                        start date in YYYY-MM-DD format (default = min date in
-                        dataset)
-  -e E_DATE, --e_date E_DATE
-                        end date in YYYY-MM-DD format (default = max date in
-                        dataset)
-  -z Z_VAL_TYPE, --z_val_type Z_VAL_TYPE
-                        type of z statistic - standard std or continuity
-                        corrected cc (default = cc)
-```
 ## References
 Angelini, G., Candila, V., & De Angelis, L. (2022). Weighted Elo rating for tennis match predictions. European Journal of Operational Research, 297(1), 120-132. https://doi.org/10.1016/j.ejor.2021.04.011.
