@@ -27,7 +27,7 @@ python bogey_identification_tennis_v3.py [--options]
 -s/--s_date: Start date in YYYY-MM-DD format (default = min date in dataset)\
 -e/--e_date: End date in YYYY-MM-DD format (default = max date in dataset)\
 -z/--z_val_type: Type of z statistic - standard std or continuity corrected cc (default = cc)\
--p/--p_adj_method: P-value adjustment for multiple comparisons method, e.g., bonferroni, hochberg, BH, holm, hommel, BY. Default is BH.\
+-p/--p_adj_method: P-value adjustment for multiple comparisons method, e.g., bonferroni, hochberg, BH, holm, hommel, BY. Default is BH.
 
 ## References
 Angelini, G., Candila, V., & De Angelis, L. (2022). Weighted Elo rating for tennis match predictions. European Journal of Operational Research, 297(1), 120-132. https://doi.org/10.1016/j.ejor.2021.04.011.
