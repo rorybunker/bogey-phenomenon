@@ -33,7 +33,6 @@ python bogey_identification_fisher.py [--options]
 | -t, --tournament| str     | False    | all     | Tournament name, e.g., Australian Open                                                                 |
 | -s, --s_date    | str     | False    | min     | Start date in YYYY-MM-DD format (default = min date in dataset)                                       |
 | -e, --e_date    | str     | False    | max     | End date in YYYY-MM-DD format (default = max date in dataset)                                         |
-| -p, --p_adj_method| str   | False    | BH      | p-value adjustment for multiple comparisons method, e.g., bonferroni, hochberg, BH, holm, hommel, BY |
 | -u, --upset     | str     | False    | odds    | Whether an unexpected result is based on the betting odds or elo rating (default=odds)                |
 
 ## References

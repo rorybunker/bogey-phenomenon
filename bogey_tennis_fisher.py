@@ -125,14 +125,6 @@ def unique(list1):
     x = np.array(list1)
     return list(np.unique(x))
 
-def adjust_pvalues(p_val_csv, p_adj_method):
-    from rpy2.robjects.packages import importr
-    from rpy2.robjects.vectors import FloatVector
-    stats = importr('stats')
-    p_val_list = p_val_csv['p_value_fisher'].tolist()
-    p_val_1_adjusted = stats.p_adjust(FloatVector(p_val_list), method=p_adj_method)
-    return p_val_1_adjusted
-
 # Function to determine wins and losses for a player
 def get_wins_losses(player, matches_df):
     player_matches = matches_df[(matches_df['Winner'] == player) | (matches_df['Loser'] == player)]
