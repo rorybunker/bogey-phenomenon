@@ -6,28 +6,26 @@ Data_Clean.csv is the ATP men's data, Supplementary Data S1 in Appendix C. Suppl
 The csv file can be created by running the following create_data_clean_csv_files.R script.
 
 ## Requirements & Environment
-A python 3 environment with pandas and scipy installed, e.g.,
+Create in conda using the 
 ```
-conda create --name bogey
-conda activate bogey
-conda install pandas
-conda install scipy
+conda env create -f environment.yml
 ```
 
 ## Usage
 ```
-python bogey_identification_tennis_v3.py [--options]
+python bogey_identification_fisher.py [--options]
 ```
 ## Options
--a/--player1: Player name in format Last Name, Initial., enclosed in double quotes e.g., "Djokovic, N." (default = all players)\
--b/--player2: Player name in format Last Name, Initial., enclosed in double quotes e.g., "Djokovic, N." (default = all players)\
--d/--dataset: atp (mens), wta (womens), or test\
--g/--grandslam: 0 = non grand slams, 1 = grand slams only, 2 = grand slams and non grand slams (default)\
--t/--tournament: Tournament name, e.g., Australian Open (default is all tournaments)\
--s/--s_date: Start date in YYYY-MM-DD format (default = min date in dataset)\
--e/--e_date: End date in YYYY-MM-DD format (default = max date in dataset)\
--z/--z_val_type: Type of z statistic - standard std or continuity corrected cc (default = cc)\
--p/--p_adj_method: P-value adjustment for multiple comparisons method, e.g., bonferroni, hochberg, BH, holm, hommel, BY. Default is BH.
+Argument	Type	Required	Default	Help
+-p1, --player_1	str	False	all	Player name in format Last Name Initial., enclosed in double quotes e.g., "Djokovic N." (default = all players)
+-p2, --player_2	str	False	all	Player name in format Last Name Initial., enclosed in double quotes e.g., "Djokovic N." (default = all players)
+-d, --dataset	str	True		atp or wta
+-g, --grand_slam	int	False	2	0 = non grand slams, 1 = grand slams only, 2 = grand slams and non grand slams (default)
+-t, --tournament	str	False	all	Tournament name, e.g., Australian Open
+-s, --s_date	str	False	min	Start date in YYYY-MM-DD format (default = min date in dataset)
+-e, --e_date	str	False	max	End date in YYYY-MM-DD format (default = max date in dataset)
+-p, --p_adj_method	str	False	BH	p-value adjustment for multiple comparisons method, e.g., bonferroni, hochberg, BH, holm, hommel, BY
+-u, --upset	str	False	odds	Whether an unexpected result is based on the betting odds or elo rating (default=odds)
 
 ## References
 Angelini, G., Candila, V., & De Angelis, L. (2022). Weighted Elo rating for tennis match predictions. European Journal of Operational Research, 297(1), 120-132. https://doi.org/10.1016/j.ejor.2021.04.011.
