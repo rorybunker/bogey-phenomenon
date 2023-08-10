@@ -34,4 +34,6 @@ dependencies:
   - wheel=0.37.1=pyhd8ed1ab_0
   - xz=5.2.5=haf1e3a3_1
   - zlib=1.2.12=hfe4f2af_2
+  - requests=2.31.0
+  - patool=1.12
 prefix: /opt/anaconda3/envs/bogey

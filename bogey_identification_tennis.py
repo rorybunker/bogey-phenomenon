@@ -10,15 +10,29 @@ The data, Data_Clean.csv, is the same dataset Angelini et al. (2022), which
 had been passed through the clean() function in the authors' welo R package 
 @author: rorybunker
 """
-
+import itertools
 import pandas as pd
 import math
 import scipy.stats as st # for pvalue 
 import numpy as np
 import sys
+import argparse
 pd.options.mode.chained_assignment = None
 import warnings
 warnings.filterwarnings("ignore")
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-p1', '--player_1', type=str, required=False, default='all', help='player name in format Last Name, Initial., enclosed in double quotes e.g., "Djokovic, N." (default = all players)')
+parser.add_argument('-p2', '--player_2', type=str, required=False, default='all', help='player name in format Last Name, Initial., enclosed in double quotes e.g., "Djokovic, N." (default = all players)')
+parser.add_argument('-d', '--dataset', type=str, required=True, help='atp (mens) or wta (womens) or test')
+parser.add_argument('-g', '--grand_slam', type=int, required=False, default=2, help='0 = non grand slams, 1 = grand slams only, 2 = grand slams and non grand slams (default)')
+parser.add_argument('-t', '--tournament', type=str, required=False, default='all', help='tournament name, e.g., Australian Open')
+parser.add_argument('-s', '--s_date', type=str, required=False, default='min', help='start date in YYYY-MM-DD format (default = min date in dataset)')
+parser.add_argument('-e', '--e_date', type=str, required=False, default='max', help='end date in YYYY-MM-DD format (default = max date in dataset)')
+parser.add_argument('-z', '--z_val_type', type=str, required=False, default='cc', help='type of z statistic - standard std or continuity corrected cc (default = cc)')
+parser.add_argument('-p', '--p_adj_method', type=str, required=False, default='BH', help='p-value adjustment for multiple comparisons method, e.g., bonferroni, hochberg, BH, holm, hommel, BY')
+parser.add_argument('-alpha', '--sig_level', type=float, required=False, default=0.05, help='level of statistical significance, alpha. Default is alpha = 0.05')
+args, _ = parser.parse_known_args()
 
 # create historical result set, HR, which consists of upset results, U, and non-upset results, N.
 def check_hr_set(p1, p2, df_p1_p2):
@@ -28,7 +42,6 @@ def check_hr_set(p1, p2, df_p1_p2):
         return "N"
     
 def add_upset_type_column1(p1, p2, df_p1_p2):
-    
     if 1/df_p1_p2["AvgW"] < 1/df_p1_p2["AvgL"] and df_p1_p2['Winner'] == p1:
         return "UW"
     elif 1/df_p1_p2["AvgW"] < 1/df_p1_p2["AvgL"] and df_p1_p2['Winner'] == p2:
@@ -69,7 +82,6 @@ def list_of_tuples(l1, l2):
 
 # Finds runs in data: counts and creates a list of them
 def getRuns(L):
-  import itertools
   return len([sum(1 for _ in r) for _, r in itertools.groupby(L)])
 
 # define the WW runs test described above
@@ -89,44 +101,45 @@ def unique(list1):
     x = np.array(list1)
     return list(np.unique(x))
 
-def main():    
-    df = pd.read_csv('https://raw.githubusercontent.com/rorybunker/bogey-teams-players-sport/main/Data_Clean.csv', low_memory=False)
+def main(): 
+    if args.dataset == 'test':
+        df = pd.read_csv('Data_Clean_Test.csv', low_memory=False)
+    elif args.dataset == 'wta':
+        df = pd.read_csv('Data_Clean_WTA.csv', low_memory=False)
+    elif args.dataset == 'atp':
+        df = pd.read_csv('Data_Clean.csv', low_memory=False)
 
-    # ===================== SET PARAMETERS ===================== #
-    p1 = 'Ferrer D.'
-    p2 = 'Lopez F.'
+    if args.tournament != 'all':
+        df = df[(df["Tournament"] == args.tournament)]
+
+    if args.grand_slam == 0:
+        df = df[(df["Series"] != "Grand Slam")]
+    elif args.grand_slam == 1:
+        df = df[(df["Series"] == "Grand Slam")]
+
+    if args.s_date == 'min':
+        start_date = min(df["Date"])
+    elif args.s_date != 'min':
+        start_date = args.s_date
+
+    if args.e_date == 'max':
+        end_date = max(df["Date"])
+    elif args.e_date != 'max':
+        end_date = args.e_date
     
-    # uncomment if you want to run for a specific tournament
-    # df = df[(df["Tournament"] == "Australian Open")]
-    
-    # uncomment if you want to run for Grand Slams only
-    # df = df[(df["Series"] == "Grand Slam")]
-    
-    # uncomment if you want to run for *non* Grand Slams only
-    # df = df[(df["Series"] != "Grand Slam")]
-    
-    # specify dates in format "YYYY-MM-DD" if you want to run for a specific date range
-    # or use start_date = min(df["Date"]) and end_date = max(df["Date"]) for whole range
-    start_date = min(df["Date"])
-    end_date = max(df["Date"])
-    sig_level = 0.05
-    # ========================================================== #
+    p1 = args.player_1
+    p2 = args.player_2
     
     df = df[((df["Date"] >= start_date) & (df["Date"] <= end_date))]
     
     # if AvgW or AvgL is null, replace with B365 odds
-    # df[df["AvgW"].isnull()]["AvgW"]
-    # df[df["AvgW"].isnull()]['B365W']
     df['AvgW'] = df['AvgW'].fillna(df['B365W'])
-    #df[df["AvgL"].isnull()]['B365L']
     df['AvgL'] = df['AvgL'].fillna(df['B365L'])
     
     df_p1_p2 = df[((df["P_i"] == p1) & (df["P_j"] == p2)) | ((df["P_i"] == p2) & (df["P_j"] == p1))]
     
     # match results for the given parameters
-    HR = get_hr_list(p1, p2, df_p1_p2)[0]
-    # corresponding match dates
-    HR_date_list = get_hr_list(p1, p2, df_p1_p2)[1]
+    HR, HR_date_list = get_hr_list(p1, p2, df_p1_p2)
     
     # Gather info 
     numRuns = getRuns(HR) # Grab streaks in the data
@@ -173,7 +186,7 @@ def main():
     
     # === STEP 2 === #
     # if 1-sided p-value is statistically significant continue
-    if p_values_one < sig_level:
+    if p_values_one < args.sig_level:
         UR = get_ur_list(p1, p2, df_p1_p2)[0]
         UR_date_list = get_ur_list(p1, p2, df_p1_p2)[1]
         
