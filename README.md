@@ -5,7 +5,7 @@ This repository contains the code for the preprint Bunker, Yeung, and Fujii (202
 The code for the previous conference paper (Bunker, 2022), which used a different approach with Wald-Walfowitz runs tests, is in the Archive folder.
 
 ## Dataset
-Data_Clean_ATP_Elo_WElo.csv contains the ATP men's data including Elo ratings. 
+Data_Clean_ATP_Elo_WElo.csv contains the ATP men's data including Elo ratings, and Data_Clean_WTA.csv contains the WTA women's data including Elo ratings.
 
 These files were obtained Supplementary Data S1 in Appendix C. Supplementary materials, used by Angelini, Candila & De Angelis, 2022 (https://doi.org/10.1016/j.ejor.2021.04.011), and were passed through their clean() function in their welo R package (https://cran.r-project.org/web/packages/welo/index.html) before being exported to csv. This data was originally sourced by the authors from tennis-data.co.uk.
 
