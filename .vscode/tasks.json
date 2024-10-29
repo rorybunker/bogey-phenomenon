@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Set Proxy",
+        "type": "process",
+        "command": "python",
+        "args": ["${workspaceFolder}/set_proxy.py"],
+        "presentation": {
+          "reveal": "never"
+        }
+      },
+      {
+        "label": "Run Python Script",
+        "type": "process",
+        "command": "python",
+        "args": ["${file}"],
+        "dependsOn": ["Set Proxy"]
+      }
+    ]
+  }

@@ -1,4 +1,4 @@
-import csv
+import csv 
 import pandas as pd
 import numpy as np
 import warnings
@@ -8,6 +8,17 @@ import ast
 import os
 import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib import rcParams
+
+# Set global font to Times New Roman and increase font sizes
+rcParams['font.family'] = 'serif'
+rcParams['font.serif'] = ['Times New Roman']
+rcParams['font.size'] = 20  # Default font size for all text
+rcParams['axes.titlesize'] = 20  # Title font size
+rcParams['axes.labelsize'] = 20  # Axes labels font size
+rcParams['xtick.labelsize'] = 20  # X-axis tick labels font size
+rcParams['ytick.labelsize'] = 20  # Y-axis tick labels font size
+rcParams['legend.fontsize'] = 16  # Legend font size
 
 pd.options.mode.chained_assignment = None
 warnings.filterwarnings("ignore")
@@ -23,6 +34,14 @@ parser.add_argument('-e', '--e_date', type=str, required=False, default='max', h
 parser.add_argument('-p', '--p_adj_method', type=str, required=False, default='BH', help='p-value adjustment for multiple comparisons method, e.g., bonferroni, hochberg, BH, holm, hommel, BY')
 parser.add_argument('-u', '--upset', type=str, required=False, choices=['odds','elo'], default='odds', help='whether an unexpected result is based on the betting odds or elo rating (default=odds)')
 args, _ = parser.parse_known_args()
+
+def get_grand_slam_description(grand_slam_value):
+    if grand_slam_value == 0:
+        return "Non Grand Slams"
+    elif grand_slam_value == 1:
+        return "Grand Slams Only"
+    elif grand_slam_value == 2:
+        return "All Tournaments"  # This could also be "Grand Slams and Non Grand Slams"
 
 def main():
     if args.dataset == 'test':
@@ -91,9 +110,7 @@ def main():
 
     # Calculate the combined mean and variance for betting odds
     combined_mean = agg_odds_df['Betting_Odds_mean']
-    # combined_mean = (agg_winner_df['Betting_Win_Odds_mean'] + agg_winner_df['Betting_Lose_Odds_mean']) / 2
     combined_variance = agg_odds_df['Betting_Odds_variance']
-    # combined_variance = (agg_winner_df['Betting_Win_Odds_variance'] + agg_winner_df['Betting_Lose_Odds_variance']) / 2
 
     # Calculate the coefficient of variation for Elo and Betting odds
     agg_elo_df['Elo_CV'] = np.sqrt(agg_elo_df['Elo_variance']) / agg_elo_df['Elo_mean']
@@ -106,6 +123,9 @@ def main():
     agg_winner_df_filtered = agg_winner_df.dropna()
     agg_odds_df_filtered = agg_odds_df.dropna()
 
+    # Grand Slam description
+    grand_slam_desc = get_grand_slam_description(args.grand_slam)
+
     # Plotting the CVs
     plt.figure(figsize=(12, 6))
     plt.plot(agg_elo_df_filtered['Year'].astype(str), agg_elo_df_filtered['Elo_CV'], marker='o', label='Elo CV')
@@ -115,31 +135,20 @@ def main():
 
     plt.xlabel('Year')
     plt.ylabel('Coefficient of Variation (CV)')
-    if args.grand_slam == 1:
-        plt.title('Yearly Coefficient of Variation (CV) for Betting Odds and Elo Ratings' + ' - ' + args.dataset + ' - ' + 'Grand Slam')
-    elif args.grand_slam == 0:
-        plt.title('Yearly Coefficient of Variation (CV) for Betting Odds and Elo Ratings' + ' - ' + args.dataset + ' - ' + 'Non Grand Slam')
-    else:
-        plt.title('Yearly Coefficient of Variation (CV) for Betting Odds and Elo Ratings' + ' - ' + args.dataset)
-    plt.legend()
+    plt.title(f'Yearly Coefficient of Variation (CV) for Betting Odds and Elo Ratings - {args.dataset}, {grand_slam_desc}')
+    plt.legend(loc='upper left', bbox_to_anchor=(1, 1), framealpha=0.8)  # Place legend outside the plot
     plt.grid(True)
     plt.xticks(rotation=45)
     plt.tight_layout()
     plt.show()
 
-    # Create figure and axes objects
+    # Create figure and axes objects for Elo Mean and CV
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8), sharex=True)
 
     # Plot Elo mean
     ax1.plot(agg_elo_df_filtered['Year'].astype(str), agg_elo_df_filtered['Elo_mean'], marker='o', color='b', label='Elo Mean')
     ax1.set_ylabel('Elo Mean')
-    # ax1.set_title('Elo Mean and CV Over Time')
-    if args.grand_slam == 1:
-        ax1.set_title('Elo Mean and CV Over Time' + ' - ' + args.dataset + ' - ' + 'Grand Slam')
-    elif args.grand_slam == 0:
-        ax1.set_title('Elo Mean and CV Over Time' + ' - ' + args.dataset + ' - ' + 'Non Grand Slam')
-    else:
-        ax1.set_title('Elo Mean and CV Over Time' + ' - ' + args.dataset)
+    ax1.set_title(f'Elo Mean and CV Over Time - {args.dataset}, {grand_slam_desc}')
 
     # Plot Elo variance
     ax2.plot(agg_elo_df_filtered['Year'].astype(str), agg_elo_df_filtered['Elo_CV'], marker='o', color='r', label='Elo CV')
@@ -147,8 +156,8 @@ def main():
     ax2.set_xlabel('Year')
 
     # Show legend and grid
-    ax1.legend()
-    ax2.legend()
+    ax1.legend(loc='upper left', bbox_to_anchor=(1, 1), framealpha=0.8)
+    ax2.legend(loc='upper left', bbox_to_anchor=(1, 1), framealpha=0.8)
     ax1.grid(True)
     ax2.grid(True)
 
@@ -157,22 +166,15 @@ def main():
 
     # Adjust layout
     plt.tight_layout()
-
-    # Show plot
     plt.show()
 
-   # Create figure and axes objects
+    # Create figure and axes objects for Odds Mean and CV
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8), sharex=True)
 
     # Plot Winner Odds mean
     ax1.plot(agg_winner_df_filtered['Year'].astype(str), agg_winner_df_filtered['Betting_Win_Odds_mean'], marker='o', color='b', label='Winner Odds Mean')
     ax1.set_ylabel('Odds Mean')
-    if args.grand_slam == 1:
-        ax1.set_title('Odds Mean and CV Over Time' + ' - ' + args.dataset + ' - ' + 'Grand Slam')
-    elif args.grand_slam == 0:
-        ax1.set_title('Mean and CV Over Time' + ' - ' + args.dataset + ' - ' + 'Non Grand Slam')
-    else:
-        ax1.set_title('Odds Mean and CV Over Time' + ' - ' + args.dataset)
+    ax1.set_title(f'Odds Mean and CV Over Time - {args.dataset}, {grand_slam_desc}')
 
     # Plot Loser Odds mean
     ax1.plot(agg_winner_df_filtered['Year'].astype(str), agg_winner_df_filtered['Betting_Lose_Odds_mean'], marker='o', color='r', label='Loser Odds Mean')
@@ -192,8 +194,8 @@ def main():
     ax2.plot(agg_winner_df_filtered['Year'].astype(str), np.sqrt(combined_variance), marker='o', color='g', label='Combined Odds CV')
 
     # Show legend and grid
-    ax1.legend()
-    ax2.legend()
+    ax1.legend(loc='upper left', bbox_to_anchor=(1, 1), framealpha=0.8)
+    ax2.legend(loc='upper left', bbox_to_anchor=(1, 1), framealpha=0.8)
     ax1.grid(True)
     ax2.grid(True)
 
@@ -202,8 +204,6 @@ def main():
 
     # Adjust layout
     plt.tight_layout()
-
-    # Show plot
     plt.show()
 
 if __name__ == "__main__":

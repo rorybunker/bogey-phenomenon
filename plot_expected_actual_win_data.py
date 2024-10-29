@@ -3,6 +3,11 @@ import pandas as pd
 import numpy as np
 from matplotlib.lines import Line2D
 import argparse
+from matplotlib import rcParams
+
+# Set global font to Times New Roman
+rcParams['font.family'] = 'serif'
+rcParams['font.serif'] = ['Times New Roman']
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-d', '--dataset', type=str, required=True, help='atp or wta')
